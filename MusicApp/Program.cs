@@ -13,6 +13,13 @@ builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(build
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<BlogContext>();
+    DbInitializer.Initialize(context);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
