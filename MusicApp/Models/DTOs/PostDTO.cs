@@ -1,3 +1,5 @@
+namespace MusicApp.Models.DTOs
+{
 public class PostDTO
     {
         [JsonIgnore]
@@ -10,3 +12,4 @@ public class PostDTO
        
        
     }
+}

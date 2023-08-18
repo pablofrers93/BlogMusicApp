@@ -1,4 +1,6 @@
-public class CommentDTO
+namespace MusicApp.Models.DTOs
+{
+    public class CommentDTO
     {
         [JsonIgnore]
         public long Id { get; set; }
@@ -6,3 +8,4 @@ public class CommentDTO
         public string? Text { get; set; }
     
     }
+}

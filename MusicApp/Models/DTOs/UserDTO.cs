@@ -1,3 +1,5 @@
+namespace MusicApp.Models.DTOs
+{
 public class UserDTO
     {
         [JsonIgnore]
@@ -7,3 +9,4 @@ public class UserDTO
         public string Email { get; set; }
         public ICollection<PostDTO> Posts { get; set; }
     }
+}
