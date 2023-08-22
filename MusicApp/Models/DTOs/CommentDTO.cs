@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace MusicApp.Models.DTOs
 {
     public class CommentDTO
