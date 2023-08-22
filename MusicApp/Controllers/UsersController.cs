@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
-using MusicApp.Models.Enums;
 using MusicApp.Repositories.Interfaces;
 using System.Net;
 using System.Text.RegularExpressions;
