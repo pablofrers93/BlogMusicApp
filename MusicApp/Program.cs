@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Controllers;
 using MusicApp.Models;
+using MusicApp.Models.Entities;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Text.Json.Serialization;
