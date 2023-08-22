@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicApp.Repositories.Interfaces;
 using System.Security.Claims;
 using MusicApp.Models.Entities;
+using MusicApp.Models.DTOs;
 
 namespace MusicApp.Controllers
 {
@@ -19,18 +20,24 @@ namespace MusicApp.Controllers
             _userRepository = userRepository;
         }
 
+        [HttpGet("")]
+        public string Get()
+        {
+            return "hola mundo";
+        }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User User)
+        public async Task<IActionResult> Login([FromBody] UserLoginDTO User)
         {
             try
             {
-                User user = _userRepository.FindByEmail(User.Email);
-                if (user == null || !String.Equals(user.Password, User.Password))
+                User userLogin = _userRepository.FindByEmail(User.Email);
+                if (userLogin == null || !String.Equals(userLogin.Password, User.Password))
                     return Unauthorized();
 
                 var claims = new List<Claim>
                 {
-                    new Claim("User", user.Email),
+                    new Claim("User", userLogin.Email),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(

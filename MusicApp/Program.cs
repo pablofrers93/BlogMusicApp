@@ -21,10 +21,17 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserOnly", policy => policy.RequireClaim("User"));
 });
-
+builder.Services.AddCors(options =>
+{
+        options.AddDefaultPolicy(builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -33,7 +40,6 @@ builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(build
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<AuthController>();
 
 var app = builder.Build();
 
@@ -52,6 +58,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors();
 
 app.UseEndpoints(endpoints =>
 {
