@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MusicApp.Models.DTOs;
+using MusicApp.Models.Entities;
+using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Text.RegularExpressions;
 
@@ -11,34 +14,48 @@ namespace MusicApp.Controllers
     public class CommentsController : ControllerBase
     {
         private ICommentRepository _commentRepository;
+        private IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public CommentsController(ICommentRepository commentRepository, IMapper mapper)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
         {
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Client client)
+        public IActionResult Post(Comment comment)
         {
             try
             {
                 //validaciones
-                Client user = _clientRepository.FindByEmail(client.Email);
-                if (user != null)
+                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                if (email == string.Empty)
                 {
-                    return StatusCode(403, "El email está en uso");
+                    return Unauthorized();
                 }
-                Client newClient = new Client
+                User user = _userRepository.FindByEmail(email);
+                if (user is null)
                 {
-                    Email = client.Email,
-                    Password = client.Password,
-                    FirstName = client.FirstName,
-                    LastName = client.LastName,
-                };
-                _commentRepository.Save(newClient);
-                return Created("Creado con exito", newClient);
+                    return Unauthorized();
+                }
+                Comment newComment = new Comment
+                {
+                    CreationDate = comment.CreationDate,
+                    Text = comment.Text,
+                    Post = comment.Post,
+                    User = comment.User
+                }
+                _commentRepository.Save(newComment);
+                CommentDTO newCommentDTO = new CommentDTO
+                {
+                    CreationDate = newCommentDTO.CreationDate,
+                    Text = newCommentDTO.Text,
+                    Post = newCommentDTO.Post,
+                    User = newCommentDTO.User
+                }
+                return Created("Creado con exito", newCommentDTO);
             }
             catch (Exception ex)
             {
