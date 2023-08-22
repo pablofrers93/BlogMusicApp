@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
 using MusicApp.Models.Enums;
 using MusicApp.Repositories.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace MusicApp.Controllers
 {
@@ -12,10 +14,12 @@ namespace MusicApp.Controllers
     public class UsersController : ControllerBase
     {
         private IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,33 +28,8 @@ namespace MusicApp.Controllers
             try
             {
                 var users = _userRepository.GetAllUsers();
+                var usersDTO = _mapper.Map<List<UserDTO>>(users);
 
-                var usersDTO = new List<UserDTO>();
-
-                foreach (User user in users)
-                {
-                    var newUserDTO = new UserDTO
-                    {
-                        Id = user.Id,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-
-
-                        Posts = user.Posts.Select(p => new PostDTO
-                        {
-                            Id = p.Id,
-                            CreationDate = p.CreationDate,
-                            Title = p.Title,
-                            Image = p.Image,
-                            Text = p.Text,
-                            Category = p.Category,
-                        }).ToList()
-
-                    };
-
-                    usersDTO.Add(newUserDTO);
-                }
                 return Ok(usersDTO);
             }
             catch (Exception ex)
@@ -68,30 +47,11 @@ namespace MusicApp.Controllers
 
                 if (user is null)
                 {
-
                     return NotFound(); //404
-
                 }
 
-                UserDTO newUserDTO = new UserDTO
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-
-                    Posts = user.Posts.Select(p => new PostDTO
-                    {
-                        Id = p.Id,
-                        CreationDate = p.CreationDate,
-                        Title = p.Title,
-                        Image = p.Image,
-                        Text = p.Text,
-                        Category = p.Category,
-                    }).ToList()
-
-                };
-
+                var newUserDTO = _mapper.Map<UserDTO>(user);
+          
                 return Ok(newUserDTO);
 
             }
@@ -118,25 +78,7 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
-
-                UserDTO newUserDTO = new UserDTO
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-
-                    Posts = user.Posts.Select(p => new PostDTO
-                    {
-                        Id = p.Id,
-                        CreationDate = p.CreationDate,
-                        Title = p.Title,
-                        Image = p.Image,
-                        Text = p.Text,
-                        Category = p.Category,
-                    }).ToList()
-
-                };
+                var newUserDTO = _mapper.Map<UserDTO>(user);
 
                 return Ok(newUserDTO);
             }
@@ -146,11 +88,7 @@ namespace MusicApp.Controllers
             }
         }
 
-        //[HttpPost]
-        //public IActionResult Post([FromBody] UserDTO userDTO)
-        //{
-
-        //}
+       
 
     }
 }
