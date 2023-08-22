@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Agrega el servicio de automapper
 var mapperConfig = new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile<AutoMapperProfiles>(); // Agrega tus perfiles de mapeo aquí
+    cfg.AddProfile<AutoMapperProfiles>(); // Agrega tus perfiles de mapeo aquï¿½
 });
 
 IMapper mapper = mapperConfig.CreateMapper();
