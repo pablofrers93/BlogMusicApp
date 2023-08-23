@@ -16,17 +16,43 @@ namespace MusicApp.Controllers
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private IPostRepository _postRepository;
 
-        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _postRepository = postRepository;
         }
 
+        [HttpGet]
+            public IActionResult Get(long id)
+            {
+                try
+                {
+                var post = _postRepository.FindById(id);
+                if(post is null)
+                {
+                    return NotFound();
+                }
+
+                var newPostDTO = _mapper.Map<PostDTO>(post);
+
+                return Ok();
+                }
+                catch (Exception Ex)
+                {
+                    {
+                        return StatusCode(500, Ex.Message);
+                    }
+                }
+            }
+
+
         [HttpPost]
-        public IActionResult Post(CommentNewDTO comment)
-        {
+            public IActionResult Post(CommentNewDTO comment)
+            {
             try
             {
                 //validaciones
