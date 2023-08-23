@@ -25,7 +25,7 @@ namespace MusicApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Comment comment)
+        public IActionResult Post(CommentNewDTO comment)
         {
             try
             {
@@ -42,19 +42,19 @@ namespace MusicApp.Controllers
                 }
                 Comment newComment = new Comment
                 {
-                    CreationDate = comment.CreationDate,
+                    Id = comment.Id,
+                    CreationDate = DateTime.Now,
                     Text = comment.Text,
-                    Post = comment.Post,
-                    User = comment.User
-                }
+                    PostId = comment.PostId,
+                    UserId = comment.UserId
+                };
                 _commentRepository.Save(newComment);
                 CommentDTO newCommentDTO = new CommentDTO
                 {
-                    CreationDate = newCommentDTO.CreationDate,
-                    Text = newCommentDTO.Text,
-                    Post = newCommentDTO.Post,
-                    User = newCommentDTO.User
-                }
+                    Id = comment.Id,
+                    CreationDate = DateTime.Now,
+                    Text = comment.Text
+                };
                 return Created("Creado con exito", newCommentDTO);
             }
             catch (Exception ex)
