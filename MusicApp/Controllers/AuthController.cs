@@ -20,12 +20,6 @@ namespace MusicApp.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet("")]
-        public string Get()
-        {
-            return "hola mundo";
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO User)
         {
