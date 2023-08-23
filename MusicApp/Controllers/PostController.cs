@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
@@ -12,10 +13,12 @@ namespace MusicApp.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
+        private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, IMapper mapper)
         {
             _postRepository = postRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,20 +27,8 @@ namespace MusicApp.Controllers
             try
             {
                 var posts = _postRepository.GetAllPosts();
-                var postsDTO = new List<PostDTO>();
-                foreach (Post post in posts)
-                {
-                    var newPostDTO = new PostDTO
-                    {
-                        Id = post.Id,
-                        CreationDate = post.CreationDate,
-                        Title = post.Title,
-                        Image = post.Image,
-                        Text = post.Text,
-                        Category = post.Category
-                    };
-                    postsDTO.Add(newPostDTO);
-                }
+                var postsDTO = _mapper.Map<List<PostDTO>>(posts);
+
                 return Ok(postsDTO);
             }
             catch (Exception ex)
