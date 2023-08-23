@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
-using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
-using System.Security.Principal;
 
 namespace MusicApp.Controllers
 {
@@ -36,5 +33,30 @@ namespace MusicApp.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
+        {
+            try
+            {
+                var post = _postRepository.FindById(id);
+
+                if (post is null)
+                {
+                    return NotFound(); //404
+                }
+
+                var newPostDTO = _mapper.Map<PostDTO>(post);
+
+                return Ok(newPostDTO);
+
+            }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
+
+
     }
 }

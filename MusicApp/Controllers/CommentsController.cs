@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
-using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace MusicApp.Controllers
 {
@@ -27,41 +23,41 @@ namespace MusicApp.Controllers
             _postRepository = postRepository;
         }
 
-        [HttpGet/*({"usuario"})*/]
-            public IActionResult GetCommentsByUser(long id)
-            {
+        [HttpGet("user/{id}")]
+        public IActionResult GetCommentsByUser(long id)
+        {
                 try 
                 {
-                var comments = _commentRepository.GetCommentsByUser(id);
-                if (comments is null)
-                {
-                    return NotFound();
-                }
+                    var comments = _commentRepository.GetCommentsByUser(id);
+                    if (comments is null)
+                    {
+                        return NotFound();
+                    }
 
-                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+                    var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-                return Ok(commentsDTO);
+                    return Ok(commentsDTO);
                 }
                 catch(Exception Ex)
                 {
                 return StatusCode(500, Ex.Message);
                 }
-            }
+        }
 
-        [HttpGet/*({"id"})*/]
-            public IActionResult GetCommentsByPost(long id)
+        [HttpGet("post/{id}")]
+        public IActionResult GetCommentsByPost(long id)
             {
                 try
                 {
-                var comments = _commentRepository.GetAllCommentsByPost(id);
-                if(comments is null)
-                {
-                    return NotFound();
-                }
+                    var comments = _commentRepository.GetAllCommentsByPost(id);
+                    if(comments is null)
+                    {
+                        return NotFound();
+                    }
 
-                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+                    var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-                return Ok(commentsDTO);
+                    return Ok(commentsDTO);
                 }
                 catch (Exception Ex)
                 {
@@ -69,8 +65,8 @@ namespace MusicApp.Controllers
                 }
             }
 
-        [HttpPost]
-       public IActionResult Post(CommentNewDTO comment)
+       [HttpPost]
+       public IActionResult Post(CommentNewDTO commentNewDTO)
        {
             try
             {
@@ -85,22 +81,13 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
-                Comment newComment = new Comment
-                {
-                    Id = comment.Id,
-                    CreationDate = DateTime.Now,
-                    Text = comment.Text,
-                    PostId = comment.PostId,
-                    UserId = comment.UserId
-                };
-                _commentRepository.Save(newComment);
-                CommentDTO newCommentDTO = new CommentDTO
-                {
-                    Id = comment.Id,
-                    CreationDate = DateTime.Now,
-                    Text = comment.Text
-                };
-                return Created("Creado con exito", newCommentDTO);
+
+                var comment = _mapper.Map<Comment>(commentNewDTO);
+                _commentRepository.Save(comment);
+
+                var commentDTO =_mapper.Map<CommentDTO>(comment);
+
+                return Created("Creado con exito", commentDTO);
             }
             catch (Exception ex)
             {
