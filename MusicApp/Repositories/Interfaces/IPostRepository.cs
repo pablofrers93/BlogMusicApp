@@ -11,5 +11,6 @@ namespace MusicApp.Repositories.Interfaces
         IEnumerable<Post> GetPostsByUser(long userId);
         Post GetLastPostRegistered();
         Post FindByCategory(string number);
+         
     }
 }

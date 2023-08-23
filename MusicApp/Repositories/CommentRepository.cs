@@ -1,4 +1,5 @@
-﻿using MusicApp.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicApp.Models;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
 
@@ -14,6 +15,12 @@ namespace MusicApp.Repositories
         {
             return FindByCondition(c => c.Id == id)
                 .FirstOrDefault();
+        }
+
+        public IEnumerable<Comment> GetAllCommentsByPost(long postId)
+        {
+            return FindByCondition(comment => comment.PostId == postId)
+                .ToList();
         }
 
         public IEnumerable<Comment> GetCommentsByUser(long userId)
@@ -33,6 +40,7 @@ namespace MusicApp.Repositories
             }
             return lastComment.Text;
         }
+
 
         public void Save(Comment comment)
         {
