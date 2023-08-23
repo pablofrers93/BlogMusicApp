@@ -13,12 +13,14 @@ namespace MusicApp.Controllers
     public class UsersController : ControllerBase
     {
         private IUserRepository _userRepository;
+        private IPostRepository _postRepository;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _postRepository = postRepository;
         }
 
         [HttpGet]
@@ -134,7 +136,37 @@ namespace MusicApp.Controllers
             }
         }
 
+        [HttpGet("current/posts")] //para enviar los post del usuario al front
+        public IActionResult GetPosts()
+        {
+            try
+            {
+                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
 
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized("Acceso no autorizado");
+                }
+
+                User user = _userRepository.FindByEmail(email);
+
+                if (user is null)
+                {
+                    return Unauthorized("No existe el cliente");
+                }
+
+                // Obtén las cuentas asociadas al cliente desde el repositorio de cuentas.
+                var posts = _postRepository.GetPostsByUser(user.Id);
+
+                var postsDTO = _mapper.Map<List<PostDTO>>(posts);
+
+                return Ok(postsDTO);
+            }
+            catch(Exception  ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         private static bool IsNameValid(string name)
         {
             return Regex.IsMatch(name, @"^[a-zA-Z\s]+$") && name.Length >= 3;
