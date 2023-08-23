@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
@@ -16,17 +17,61 @@ namespace MusicApp.Controllers
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private IPostRepository _postRepository;
 
-        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _postRepository = postRepository;
         }
 
+        [HttpGet/*({"usuario"})*/]
+            public IActionResult GetCommentsByUser(long id)
+            {
+                try 
+                {
+                var comments = _commentRepository.GetCommentsByUser(id);
+                if (comments is null)
+                {
+                    return NotFound();
+                }
+
+                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+
+                return Ok(commentsDTO);
+                }
+                catch(Exception Ex)
+                {
+                return StatusCode(500, Ex.Message);
+                }
+            }
+
+        [HttpGet/*({"id"})*/]
+            public IActionResult GetCommentsByPost(long id)
+            {
+                try
+                {
+                var comments = _commentRepository.GetAllCommentsByPost(id);
+                if(comments is null)
+                {
+                    return NotFound();
+                }
+
+                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+
+                return Ok(commentsDTO);
+                }
+                catch (Exception Ex)
+                {
+                        return StatusCode(500, Ex.Message);
+                }
+            }
+
         [HttpPost]
-        public IActionResult Post(CommentNewDTO comment)
-        {
+       public IActionResult Post(CommentNewDTO comment)
+       {
             try
             {
                 //validaciones
@@ -61,7 +106,7 @@ namespace MusicApp.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-        }
+       }
 
     }
 }
