@@ -13,8 +13,6 @@ namespace MusicApp.Automapper
             CreateMap<NewUserDTO, User>();
             CreateMap<Comment, CommentDTO>().ReverseMap();
             CreateMap<Post, PostDTO>().ReverseMap();
-
-
         }
     }
 }
