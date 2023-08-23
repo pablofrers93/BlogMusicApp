@@ -17,17 +17,17 @@ namespace MusicApp.Controllers
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private IPostRepository _postRepository;
+        
 
-        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _mapper = mapper;
-            _postRepository = postRepository;
+            
         }
 
-        [HttpGet/*({"usuario"})*/]
+        [HttpGet("user/{id}")]
             public IActionResult GetCommentsByUser(long id)
             {
                 try 
@@ -48,7 +48,7 @@ namespace MusicApp.Controllers
                 }
             }
 
-        [HttpGet/*({"id"})*/]
+        [HttpGet("post/{id}")]
             public IActionResult GetCommentsByPost(long id)
             {
                 try
