@@ -27,51 +27,51 @@ namespace MusicApp.Controllers
             _postRepository = postRepository;
         }
 
-        [HttpGet/*({"usuario"})*/]
-            public IActionResult GetCommentsByUser(long id)
+        [HttpGet("user/{id}")]
+        public IActionResult GetCommentsByUser(long id)
+        {
+            try 
             {
-                try 
-                {
-                var comments = _commentRepository.GetCommentsByUser(id);
-                if (comments is null)
-                {
-                    return NotFound();
-                }
-
-                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
-
-                return Ok(commentsDTO);
-                }
-                catch(Exception Ex)
-                {
-                return StatusCode(500, Ex.Message);
-                }
+            var comments = _commentRepository.GetCommentsByUser(id);
+            if (comments is null)
+            {
+                return NotFound();
             }
 
-        [HttpGet/*({"id"})*/]
-            public IActionResult GetCommentsByPost(long id)
-            {
-                try
-                {
-                var comments = _commentRepository.GetAllCommentsByPost(id);
-                if(comments is null)
-                {
-                    return NotFound();
-                }
+            var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
-
-                return Ok(commentsDTO);
-                }
-                catch (Exception Ex)
-                {
-                        return StatusCode(500, Ex.Message);
-                }
+            return Ok(commentsDTO);
             }
+            catch(Exception Ex)
+            {
+            return StatusCode(500, Ex.Message);
+            }
+        }
+
+        [HttpGet("post/{id}")]
+        public IActionResult GetCommentsByPost(long id)
+        {
+            try
+            {
+            var comments = _commentRepository.GetAllCommentsByPost(id);
+            if(comments is null)
+            {
+                return NotFound();
+            }
+
+            var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+
+            return Ok(commentsDTO);
+            }
+            catch (Exception Ex)
+            {
+                    return StatusCode(500, Ex.Message);
+            }
+        }
 
         [HttpPost]
-       public IActionResult Post(CommentNewDTO comment)
-       {
+        public IActionResult Post(CommentNewDTO comment)
+        {
             try
             {
                 //validaciones
@@ -106,7 +106,7 @@ namespace MusicApp.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-       }
+        }
 
     }
 }
