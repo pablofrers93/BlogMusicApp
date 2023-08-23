@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
@@ -35,6 +36,21 @@ namespace MusicApp.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpGet("posts")]
+        public IActionResult GetPostsByCategory(string category)
+        {
+            try
+            {
+                var posts = _postRepository.GetAllPosts().Where(p => p.Category == category).ToList();
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
     }
 }
