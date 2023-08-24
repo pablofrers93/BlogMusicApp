@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MusicApp.Automapper;
 using MusicApp.Controllers;
 using MusicApp.Models;
+using MusicApp.Models.Entities;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Text.Json.Serialization;
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Agrega el servicio de automapper
 var mapperConfig = new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile<AutoMapperProfiles>(); // Agrega tus perfiles de mapeo aquí
+    cfg.AddProfile<AutoMapperProfiles>(); // Agrega tus perfiles de mapeo aquï¿½
 });
 
 IMapper mapper = mapperConfig.CreateMapper();

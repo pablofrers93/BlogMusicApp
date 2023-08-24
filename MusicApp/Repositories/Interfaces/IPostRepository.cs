@@ -1,5 +1,4 @@
 ﻿using MusicApp.Models.Entities;
-using System.Security.Principal;
 
 namespace MusicApp.Repositories.Interfaces
 {
@@ -11,5 +10,6 @@ namespace MusicApp.Repositories.Interfaces
         IEnumerable<Post> GetPostsByUser(long userId);
         Post GetLastPostRegistered();
         Post FindByCategory(string number);
+         
     }
 }
