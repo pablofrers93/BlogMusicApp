@@ -13,14 +13,15 @@ namespace MusicApp.Controllers
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private IPostRepository _postRepository;
         
 
-        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _mapper = mapper;
-            
+            _postRepository = postRepository;
         }
 
         [HttpGet("user/{id}")]
@@ -86,6 +87,18 @@ namespace MusicApp.Controllers
                     return Unauthorized();
                 }
 
+                
+                var postexist = _postRepository.FindById(commentNewDTO.PostId);
+                if (postexist is null)
+                {
+                    return BadRequest();
+                }
+                
+                if (commentNewDTO.Text is null)
+                {
+                    return NotFound("comentario vacio");
+                }
+                
                 var comment = _mapper.Map<Comment>(commentNewDTO);
                 _commentRepository.Save(comment);
 
