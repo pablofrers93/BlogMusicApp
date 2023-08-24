@@ -87,19 +87,29 @@ namespace MusicApp.Controllers
                     return Unauthorized();
                 }
 
-                
+                // Validación de modelo
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 var postexist = _postRepository.FindById(commentNewDTO.PostId);
+
                 if (postexist is null)
                 {
-                    return BadRequest();
+                    ModelState.AddModelError("PostId", "El PostId proporcionado no es válido.");
+                    return BadRequest(ModelState);
                 }
-                
-                if (commentNewDTO.Text is null)
+
+                Comment comment = new Comment
                 {
-                    return NotFound("comentario vacio");
-                }
+                    CreationDate = DateTime.Now,
+                    Text = commentNewDTO.Text,
+                    PostId = commentNewDTO.PostId,
+                    UserId = user.Id
+                };
                 
-                var comment = _mapper.Map<Comment>(commentNewDTO);
+                //var comment = _mapper.Map<Comment>(commentNewDTO);
                 _commentRepository.Save(comment);
 
                 var commentDTO =_mapper.Map<CommentDTO>(comment);
