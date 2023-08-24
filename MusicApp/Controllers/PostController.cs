@@ -65,7 +65,7 @@ namespace MusicApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PostDTO newPostDTO)
+        public async Task<IActionResult> Post([FromForm] PostDTO newPostDTO)
         {
             try
             {
@@ -87,15 +87,28 @@ namespace MusicApp.Controllers
                 }
 
                 var imagePath = await SaveImage(newPostDTO.Image);
-
-                var post = _mapper.Map<Post>(newPostDTO);
-                post.Image = imagePath;
+                var post = new Post
+                {
+                    CreationDate = newPostDTO.CreationDate,
+                    Title = newPostDTO.Title,
+                    Image = imagePath, 
+                    Text = newPostDTO.Text,
+                    Category = newPostDTO.Category,
+                    UserId = user.Id
+                };
 
                 _postRepository.Save(post);
 
-                var postDTO = _mapper.Map<PostDTO>(post);
+                var postDTO = new PostDTO
+                {
+                    CreationDate = post.CreationDate,
+                    Title = post.Title,
+                    Image = newPostDTO.Image,
+                    Text = post.Text,
+                    Category = post.Category
+                };
 
-                return Created("El post se creó correctamente.", postDTO);
+                return Created("El post se creo correctamente.", postDTO);
             }
             catch (Exception ex)
             {
