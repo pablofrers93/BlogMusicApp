@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
+using MusicApp.Models.Enums;
+using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
-using System.Security.Principal;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MusicApp.Controllers
 {
@@ -14,11 +15,13 @@ namespace MusicApp.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository, IMapper mapper)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, IMapper mapper)
         {
             _postRepository = postRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -38,18 +41,90 @@ namespace MusicApp.Controllers
             }
         }
 
-        [HttpGet("posts")]
-        public IActionResult GetPostsByCategory(string category)
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
         {
             try
             {
-                var posts = _postRepository.GetAllPosts().Where(p => p.Category == category).ToList();
-                return Ok(posts);
+                var post = _postRepository.FindById(id);
+
+                if (post is null)
+                {
+                    return NotFound(); //404
+                }
+
+                var newPostDTO = _mapper.Map<PostDTO>(post);
+
+                return Ok(newPostDTO);
+
+            }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] PostDTO newPostDTO)
+        {
+            try
+            {
+                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                if (email == string.Empty)
+                {
+                    return Unauthorized();
+                }
+                User user = _userRepository.FindByEmail(email);
+
+                if (user is null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!ValidarPost(newPostDTO))
+                {
+                    return BadRequest("El post no cumple con las validaciones");
+                }
+
+                var imagePath = await SaveImage(newPostDTO.Image);
+
+                var post = _mapper.Map<Post>(newPostDTO);
+                post.Image = imagePath;
+
+                _postRepository.Save(post);
+
+                var postDTO = _mapper.Map<PostDTO>(post);
+
+                return Created("El post se creó correctamente.", postDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
-            }   
+            }
+        }
+
+        private bool ValidarPost(PostDTO newPostDTO)
+        {
+            return newPostDTO.Text != string.Empty ||
+                   newPostDTO.Title != string.Empty ||
+                   newPostDTO.Category != string.Empty;
+        }
+
+        [HttpPost("SaveImage")]
+        public async Task<string> SaveImage([FromForm] IFormFile file)
+        {
+            var ruta = String.Empty;
+
+            if (file.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + ".jpg";
+                ruta = $"Images/{fileName}";
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            return ruta;
         }
     }
 }

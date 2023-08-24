@@ -1,5 +1,4 @@
 ﻿using MusicApp.Models.Entities;
-using System.Security.Principal;
 
 namespace MusicApp.Repositories.Interfaces
 {

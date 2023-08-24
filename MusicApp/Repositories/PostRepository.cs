@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using MusicApp.Models;
+﻿using MusicApp.Models;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
-using System.Security.Principal;
 
 namespace MusicApp.Repositories
 {
