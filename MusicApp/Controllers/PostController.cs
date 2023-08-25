@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MusicApp.Models.DTOs;
+using MusicApp.Models.Entities;
+using MusicApp.Models.Enums;
+using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
+using System.Security.Principal;
 
 namespace MusicApp.Controllers
 {
@@ -10,11 +15,13 @@ namespace MusicApp.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository, IMapper mapper)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, IMapper mapper)
         {
             _postRepository = postRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -24,7 +31,7 @@ namespace MusicApp.Controllers
             try
             {
                 var posts = _postRepository.GetAllPosts();
-                var postsDTO = _mapper.Map<List<PostDTO>>(posts);
+                var postsDTO = _mapper.Map<List<GetPostDTO>>(posts);
 
                 return Ok(postsDTO);
             }
@@ -46,7 +53,7 @@ namespace MusicApp.Controllers
                     return NotFound(); //404
                 }
 
-                var newPostDTO = _mapper.Map<PostDTO>(post);
+                var newPostDTO = _mapper.Map<GetPostDTO>(post);
 
                 return Ok(newPostDTO);
 
@@ -57,6 +64,56 @@ namespace MusicApp.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Post([FromForm] PostDTO newPostDTO)
+        {
+            try
+            {
+                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                if (email == string.Empty)
+                {
+                    return Unauthorized();
+                }
+                User user = _userRepository.FindByEmail(email);
 
+                if (user is null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!ValidarPost(newPostDTO))
+                {
+                    return BadRequest("El post no cumple con las validaciones");
+                }
+
+                var imagePath = await SaveImage(newPostDTO.Image);
+                var post = new Post
+                {
+                    CreationDate = DateTime.Now,
+                    Title = newPostDTO.Title,
+                    Image = imagePath, 
+                    Text = newPostDTO.Text,
+                    Category = newPostDTO.Category,
+                    UserId = user.Id
+                };
+
+                _postRepository.Save(post);
+
+                var postDTO = new PostDTO
+                {
+                    CreationDate = post.CreationDate,
+                    Title = post.Title,
+                    Image = newPostDTO.Image,
+                    Text = post.Text,
+                    Category = post.Category
+                };
+
+                return Created("El post se creo correctamente.", postDTO);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
