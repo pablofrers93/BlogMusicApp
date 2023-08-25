@@ -31,7 +31,7 @@ namespace MusicApp.Controllers
             try
             {
                 var posts = _postRepository.GetAllPosts();
-                var postsDTO = _mapper.Map<List<PostDTO>>(posts);
+                var postsDTO = _mapper.Map<List<GetPostDTO>>(posts);
 
                 return Ok(postsDTO);
             }
@@ -53,7 +53,7 @@ namespace MusicApp.Controllers
                     return NotFound(); //404
                 }
 
-                var newPostDTO = _mapper.Map<PostDTO>(post);
+                var newPostDTO = _mapper.Map<GetPostDTO>(post);
 
                 return Ok(newPostDTO);
 

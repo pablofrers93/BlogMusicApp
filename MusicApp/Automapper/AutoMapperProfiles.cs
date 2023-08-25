@@ -15,9 +15,18 @@ namespace MusicApp.Automapper
             CreateMap<NewUserDTO, User>();
             CreateMap<Comment, CommentDTO>().ReverseMap();
             CreateMap<Comment,CommentNewDTO>().ReverseMap();
-            CreateMap<Post, PostDTO>()
-                .ForMember(dest => dest.Image, opt => opt.Ignore())
-                .ReverseMap();
+            CreateMap<Post, GetPostDTO>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => CreateImage(src.Image)));
+        }
+        
+        public string CreateImage(string ruta)
+        {
+            if (ruta == string.Empty || ruta == null)
+            {
+                return "";
+            }
+            byte[] file = File.ReadAllBytes(ruta);
+            return Convert.ToBase64String(file);          
         }
     }
 }

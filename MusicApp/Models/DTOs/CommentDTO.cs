@@ -10,6 +10,5 @@ namespace MusicApp.Models.DTOs
         public string? Text { get; set; }
         public long PostId { get; set; }
         public long UserId { get; set; }
-
     }
 }
