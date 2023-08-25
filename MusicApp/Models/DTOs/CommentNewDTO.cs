@@ -11,7 +11,6 @@ namespace MusicApp.Models.DTOs
 
         [Required(ErrorMessage = "El campo PostId es requerido.")]
         public long PostId { get; set; }
-        //public DateTime CreationDate { get; set; }
-        // public long UserId { get; set; }
+
     }
 }

@@ -71,7 +71,7 @@ namespace MusicApp.Controllers
             }
 
        [HttpPost]
-       public IActionResult Post(CommentNewDTO commentNewDTO)
+       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
        {
             try
             {
@@ -109,7 +109,6 @@ namespace MusicApp.Controllers
                     UserId = user.Id
                 };
                 
-                //var comment = _mapper.Map<Comment>(commentNewDTO);
                 _commentRepository.Save(comment);
 
                 var commentDTO =_mapper.Map<CommentDTO>(comment);
