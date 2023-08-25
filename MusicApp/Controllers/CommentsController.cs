@@ -81,20 +81,7 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
-
-                // Validación de modelo
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                var postexist = _postRepository.FindById(commentNewDTO.PostId);
-
-                if (postexist is null)
-                {
-                    ModelState.AddModelError("PostId", "El PostId proporcionado no es válido.");
-                    return BadRequest(ModelState);
-                }
+                //var comment = _mapper.Map<Comment>(commentNewDTO);
 
                 Comment comment = new Comment
                 {
