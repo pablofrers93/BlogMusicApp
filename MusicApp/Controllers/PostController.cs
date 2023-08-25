@@ -91,7 +91,7 @@ namespace MusicApp.Controllers
                 {
                     CreationDate = DateTime.Now,
                     Title = newPostDTO.Title,
-                    Image = imagePath, 
+                    Image = imagePath,
                     Text = newPostDTO.Text,
                     Category = newPostDTO.Category,
                     UserId = user.Id
@@ -114,6 +114,31 @@ namespace MusicApp.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        private bool ValidarPost(PostDTO newPostDTO)
+        {
+            return newPostDTO.Text != string.Empty ||
+                   newPostDTO.Title != string.Empty ||
+                   newPostDTO.Category != string.Empty;
+        }
+
+        // Método  para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
+        [HttpPost("SaveImage")]
+        private async Task<string> SaveImage([FromForm] IFormFile file)
+        {
+            var ruta = String.Empty;
+
+            if (file.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + ".jpg";
+                ruta = $"Images/{fileName}";
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            return ruta;
         }
     }
 }
