@@ -89,7 +89,7 @@ namespace MusicApp.Controllers
                 var imagePath = await SaveImage(newPostDTO.Image);
                 var post = new Post
                 {
-                    CreationDate = newPostDTO.CreationDate,
+                    CreationDate = DateTime.Now,
                     Title = newPostDTO.Title,
                     Image = imagePath, 
                     Text = newPostDTO.Text,
@@ -123,8 +123,9 @@ namespace MusicApp.Controllers
                    newPostDTO.Category != string.Empty;
         }
 
+        // Método  para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
         [HttpPost("SaveImage")]
-        public async Task<string> SaveImage([FromForm] IFormFile file)
+        private async Task<string> SaveImage([FromForm] IFormFile file)
         {
             var ruta = String.Empty;
 

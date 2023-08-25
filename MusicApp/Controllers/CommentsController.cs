@@ -82,12 +82,23 @@ namespace MusicApp.Controllers
                     return Unauthorized();
                 }
 
-                var comment = _mapper.Map<Comment>(commentNewDTO);
+                //var comment = _mapper.Map<Comment>(commentNewDTO);
+
+                Comment comment = new Comment
+                {
+                    CreationDate = DateTime.Now,
+                    Text = commentNewDTO.Text,
+                    PostId = commentNewDTO.PostId,
+                    UserId = user.Id
+                };
+
                 _commentRepository.Save(comment);
 
-                var commentDTO =_mapper.Map<CommentDTO>(comment);
+                // var commentDTO =_mapper.Map<CommentDTO>(comment);
+                commentNewDTO.CreationDate = comment.CreationDate;
+                commentNewDTO.UserId = comment.Id;
 
-                return Created("Creado con exito", commentDTO);
+                return Created("Creado con exito", commentNewDTO);
             }
             catch (Exception ex)
             {

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace MusicApp.Models.DTOs
 {
-public class PostDTO
+    public class PostDTO
     {
         [JsonIgnore]
         public long Id { get; set; }
