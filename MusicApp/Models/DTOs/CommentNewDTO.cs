@@ -1,13 +1,17 @@
 ﻿using MusicApp.Models.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MusicApp.Models.DTOs
 {
     public class CommentNewDTO
     {
-        public long Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public string? Text { get; set; }
+
+        [Required(ErrorMessage = "El campo Text es requerido.")]
+        public string Text { get; set; }
+
+        [Required(ErrorMessage = "El campo PostId es requerido.")]
         public long PostId { get; set; }
-        public long UserId { get; set; }
+
     }
 }

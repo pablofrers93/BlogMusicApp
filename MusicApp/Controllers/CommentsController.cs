@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
-using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace MusicApp.Controllers
 {
@@ -17,21 +13,22 @@ namespace MusicApp.Controllers
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private IPostRepository _postRepository;
         
 
-        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper)
+        public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _mapper = mapper;
-            
+            _postRepository = postRepository;
         }
 
         [HttpGet("user/{id}")]
-            public IActionResult GetCommentsByUser(long id)
+        public IActionResult GetCommentsByUser(long id)
+        {
+            try
             {
-                try 
-                {
                 var comments = _commentRepository.GetCommentsByUser(id);
                 if (comments is null)
                 {
@@ -41,20 +38,20 @@ namespace MusicApp.Controllers
                 var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
                 return Ok(commentsDTO);
-                }
-                catch(Exception Ex)
-                {
-                return StatusCode(500, Ex.Message);
-                }
             }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
 
         [HttpGet("post/{id}")]
-            public IActionResult GetCommentsByPost(long id)
+        public IActionResult GetCommentsByPost(long id)
+        {
+            try
             {
-                try
-                {
                 var comments = _commentRepository.GetAllCommentsByPost(id);
-                if(comments is null)
+                if (comments is null)
                 {
                     return NotFound();
                 }
@@ -62,16 +59,16 @@ namespace MusicApp.Controllers
                 var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
                 return Ok(commentsDTO);
-                }
-                catch (Exception Ex)
-                {
-                        return StatusCode(500, Ex.Message);
-                }
             }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
 
         [HttpPost]
-       public IActionResult Post(CommentNewDTO comment)
-       {
+        public IActionResult Post([FromBody]CommentNewDTO commentNewDTO)
+        {
             try
             {
                 //validaciones
@@ -85,28 +82,39 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
-                Comment newComment = new Comment
+
+                // Validación de modelo
+                if (!ModelState.IsValid)
                 {
-                    Id = comment.Id,
-                    CreationDate = DateTime.Now,
-                    Text = comment.Text,
-                    PostId = comment.PostId,
-                    UserId = comment.UserId
-                };
-                _commentRepository.Save(newComment);
-                CommentDTO newCommentDTO = new CommentDTO
+                    return BadRequest(ModelState);
+                }
+
+                var postexist = _postRepository.FindById(commentNewDTO.PostId);
+
+                if (postexist is null)
                 {
-                    Id = comment.Id,
+                    ModelState.AddModelError("PostId", "El PostId proporcionado no es válido.");
+                    return BadRequest(ModelState);
+                }
+
+                Comment comment = new Comment
+                {
                     CreationDate = DateTime.Now,
-                    Text = comment.Text
+                    Text = commentNewDTO.Text,
+                    PostId = commentNewDTO.PostId,
+                    UserId = user.Id
                 };
-                return Created("Creado con exito", newCommentDTO);
+
+                _commentRepository.Save(comment);
+
+                var commentDTO = _mapper.Map<CommentDTO>(comment);
+
+                return Created("Creado con exito", commentDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-       }
-
+        }
     }
 }
