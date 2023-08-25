@@ -81,7 +81,6 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
-
                 //var comment = _mapper.Map<Comment>(commentNewDTO);
 
                 Comment comment = new Comment
