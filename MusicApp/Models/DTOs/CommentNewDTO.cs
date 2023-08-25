@@ -1,12 +1,15 @@
 ﻿using MusicApp.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace MusicApp.Models.DTOs
 {
     public class CommentNewDTO
     {
-        //public DateTime CreationDate { get; set; }
+        [JsonIgnore]
+        public DateTime CreationDate { get; set; }
         public string? Text { get; set; }
         public long PostId { get; set; }
-        //public long UserId { get; set; }
+        [JsonIgnore]
+        public long UserId { get; set; }
     }
 }
