@@ -23,51 +23,51 @@ namespace MusicApp.Controllers
             _postRepository = postRepository;
         }
 
-       [HttpGet("user/{id}")]
-       public IActionResult GetCommentsByUser(long id)
-        {
-            try 
-            {
-            var comments = _commentRepository.GetCommentsByUser(id);
-            if (comments is null)
-            {
-                return NotFound();
-            }
-
-            var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
-
-            return Ok(commentsDTO);
-            }
-            catch(Exception Ex)
-            {
-            return StatusCode(500, Ex.Message);
-            }
-        }
-
-       [HttpGet("post/{id}")]
-       public IActionResult GetCommentsByPost(long id)
+        [HttpGet("user/{id}")]
+        public IActionResult GetCommentsByUser(long id)
         {
             try
             {
-            var comments = _commentRepository.GetAllCommentsByPost(id);
-            if(comments is null)
-            {
-                return NotFound();
-            }
+                var comments = _commentRepository.GetCommentsByUser(id);
+                if (comments is null)
+                {
+                    return NotFound();
+                }
 
-            var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-            return Ok(commentsDTO);
+                return Ok(commentsDTO);
             }
             catch (Exception Ex)
             {
-                    return StatusCode(500, Ex.Message);
+                return StatusCode(500, Ex.Message);
             }
         }
 
-       [HttpPost]
-       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
-       {
+        [HttpGet("post/{id}")]
+        public IActionResult GetCommentsByPost(long id)
+        {
+            try
+            {
+                var comments = _commentRepository.GetAllCommentsByPost(id);
+                if (comments is null)
+                {
+                    return NotFound();
+                }
+
+                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+
+                return Ok(commentsDTO);
+            }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Post(CommentNewDTO commentNewDTO)
+        {
             try
             {
                 //validaciones
@@ -82,7 +82,19 @@ namespace MusicApp.Controllers
                     return Unauthorized();
                 }
 
-                //var comment = _mapper.Map<Comment>(commentNewDTO);
+                // Validación de modelo
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var postexist = _postRepository.FindById(commentNewDTO.PostId);
+
+                if (postexist is null)
+                {
+                    ModelState.AddModelError("PostId", "El PostId proporcionado no es válido.");
+                    return BadRequest(ModelState);
+                }
 
                 Comment comment = new Comment
                 {
@@ -94,17 +106,14 @@ namespace MusicApp.Controllers
 
                 _commentRepository.Save(comment);
 
-                // var commentDTO =_mapper.Map<CommentDTO>(comment);
-                commentNewDTO.CreationDate = comment.CreationDate;
-                commentNewDTO.UserId = comment.Id;
+                var commentDTO = _mapper.Map<CommentDTO>(comment);
 
-                return Created("Creado con exito", commentNewDTO);
+                return Created("Creado con exito", commentDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-
     }
 }
