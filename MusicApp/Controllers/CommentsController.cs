@@ -67,7 +67,7 @@ namespace MusicApp.Controllers
         }
 
        [HttpPost]
-       public IActionResult Post(CommentNewDTO commentNewDTO)
+       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
        {
             try
             {
@@ -82,6 +82,14 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
+
+
+                var comment = _mapper.Map<Comment>(commentNewDTO);
+                _commentRepository.Save(comment);
+
+                var commentDTO =_mapper.Map<CommentDTO>(comment);
+
+                return Created("Creado con exito", commentDTO);
 
                 //var comment = _mapper.Map<Comment>(commentNewDTO);
 
