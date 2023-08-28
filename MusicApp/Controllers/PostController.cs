@@ -13,7 +13,7 @@ namespace MusicApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
@@ -65,7 +65,7 @@ namespace MusicApp.Controllers
                 return StatusCode(500, Ex.Message);
             }
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] PostDTO newPostDTO)
         {

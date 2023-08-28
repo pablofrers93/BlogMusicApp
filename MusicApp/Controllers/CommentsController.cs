@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
@@ -69,8 +70,8 @@ namespace MusicApp.Controllers
                         return StatusCode(500, Ex.Message);
                 }
             }
-
-       [HttpPost]
+        [Authorize]
+        [HttpPost]
        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
        {
             try
