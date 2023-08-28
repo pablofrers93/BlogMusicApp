@@ -8,8 +8,7 @@ using MusicApp.Models.Enums;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Reflection.Metadata.Ecma335;
->>>>>>>>> Temporary merge branch 2
->>>>>>>>> Temporary merge branch 2
+
 
 namespace MusicApp.Controllers
 {

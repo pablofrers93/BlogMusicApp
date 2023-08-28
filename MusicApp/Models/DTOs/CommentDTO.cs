@@ -10,12 +10,5 @@ namespace MusicApp.Models.DTOs
         public string? Text { get; set; }
         public long PostId { get; set; }
         public long UserId { get; set; }
-<<<<<<<<< Temporary merge branch 1
-
-=========
->>>>>>>>> Temporary merge branch 2
-
-=========
->>>>>>>>> Temporary merge branch 2
     }
 }
