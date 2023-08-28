@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Models.DTOs;
@@ -6,12 +7,13 @@ using MusicApp.Models.Entities;
 using MusicApp.Models.Enums;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
-using System.Reflection.Metadata.Ecma335;
+using System.Security.Principal;
 
 namespace MusicApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
@@ -91,7 +93,7 @@ namespace MusicApp.Controllers
                 {
                     CreationDate = DateTime.Now,
                     Title = newPostDTO.Title,
-                    Image = imagePath, 
+                    Image = imagePath,
                     Text = newPostDTO.Text,
                     Category = newPostDTO.Category,
                     UserId = user.Id

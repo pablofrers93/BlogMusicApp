@@ -6,6 +6,7 @@ using MusicApp.Repositories.Interfaces;
 using System.Security.Claims;
 using MusicApp.Models.Entities;
 using MusicApp.Models.DTOs;
+using MusicApp.Services;
 
 namespace MusicApp.Controllers
 {
@@ -14,10 +15,12 @@ namespace MusicApp.Controllers
     public class AuthController : ControllerBase
     {
         private IUserRepository _userRepository;
+        private ITokenServices _tokenServices;
 
-        public AuthController(IUserRepository userRepository)
+        public AuthController(IUserRepository userRepository, ITokenServices tokenServices)
         {
             _userRepository = userRepository;
+            _tokenServices = tokenServices;
         }
 
 
@@ -29,6 +32,8 @@ namespace MusicApp.Controllers
                 User userLogin = _userRepository.FindByEmail(User.Email);
                 if (userLogin == null || !String.Equals(userLogin.Password, User.Password))
                     return Unauthorized();
+
+                string jwtToken = _tokenServices.GenerateToken(User.Email);
 
                 var claims = new List<Claim>
                 {
@@ -44,8 +49,7 @@ namespace MusicApp.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
 
-                return Ok();
-
+                return Ok(new { token = jwtToken });
             }
             catch (Exception ex)
             {

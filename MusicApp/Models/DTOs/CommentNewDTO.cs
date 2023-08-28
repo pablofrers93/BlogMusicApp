@@ -1,6 +1,5 @@
 ﻿using MusicApp.Models.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace MusicApp.Models.DTOs
 {
