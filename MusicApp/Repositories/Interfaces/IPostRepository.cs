@@ -9,7 +9,7 @@ namespace MusicApp.Repositories.Interfaces
         Post FindById(long id);
         IEnumerable<Post> GetPostsByUser(long userId);
         Post GetLastPostRegistered();
-        Post FindByCategory(string number);
+        IEnumerable<Post> FindByCategory(string number);
          
     }
 }
