@@ -25,6 +25,19 @@ namespace MusicApp.Controllers
         }
 
         [HttpGet("user/{id}")]
+<<<<<<<<< Temporary merge branch 1
+
+            public IActionResult GetCommentsByUser(long id)
+            {
+
+                try 
+                {
+                    var comments = _commentRepository.GetCommentsByUser(id);
+                    if (comments is null)
+                    {
+                        return NotFound();
+                    }
+=========
         public IActionResult GetCommentsByUser(long id)
         {
             try
@@ -34,16 +47,52 @@ namespace MusicApp.Controllers
                 {
                     return NotFound();
                 }
+>>>>>>>>> Temporary merge branch 2
+                    }
+=========
+        public IActionResult GetCommentsByUser(long id)
+<<<<<<<<< Temporary merge branch 1
+                    return Ok(commentsDTO);
+                }
+                catch(Exception Ex)
+                {
+                return StatusCode(500, Ex.Message);
+                }
+        }
 
-                var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+        [HttpGet("post/{id}")]
 
-                return Ok(commentsDTO);
-            }
-            catch (Exception Ex)
+                    return Ok(commentsDTO);
+                }
+                catch (Exception Ex)
+                {
+                        return StatusCode(500, Ex.Message);
+                }
             {
                 return StatusCode(500, Ex.Message);
-            }
-        }
+<<<<<<<<< Temporary merge branch 1
+       [HttpPost]
+       public IActionResult Post(CommentNewDTO commentNewDTO)
+       {
+=========
+        [HttpPost]
+        public IActionResult Post(CommentNewDTO commentNewDTO)
+        {
+>>>>>>>>> Temporary merge branch 2
+       {
+=========
+        [HttpPost]
+        public IActionResult Post(CommentNewDTO commentNewDTO)
+        {
+>>>>>>>>> Temporary merge branch 2
+                if (comments is null)
+
+                var comments = _commentRepository.GetAllCommentsByPost(id);
+                if (comments is null)
+                {
+                    return NotFound();
+                }
+>>>>>>>>> Temporary merge branch 2
 
         [HttpGet("post/{id}")]
         public IActionResult GetCommentsByPost(long id)
@@ -55,20 +104,35 @@ namespace MusicApp.Controllers
                 {
                     return NotFound();
                 }
+>>>>>>>>> Temporary merge branch 2
 
                 var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
+<<<<<<<<< Temporary merge branch 1
+                    return Ok(commentsDTO);
+                }
+                var commentDTO = _mapper.Map<CommentDTO>(comment);
+>>>>>>>>> Temporary merge branch 2
+                        return StatusCode(500, Ex.Message);
+                }
+=========
                 return Ok(commentsDTO);
+>>>>>>>>> Temporary merge branch 2
             }
             catch (Exception Ex)
             {
                 return StatusCode(500, Ex.Message);
             }
-        }
 
+<<<<<<<<< Temporary merge branch 1
+       [HttpPost]
+       public IActionResult Post(CommentNewDTO commentNewDTO)
+       {
+=========
         [HttpPost]
-        public IActionResult Post([FromBody]CommentNewDTO commentNewDTO)
+        public IActionResult Post(CommentNewDTO commentNewDTO)
         {
+>>>>>>>>> Temporary merge branch 2
             try
             {
                 //validaciones
@@ -83,6 +147,24 @@ namespace MusicApp.Controllers
                     return Unauthorized();
                 }
 
+<<<<<<<<< Temporary merge branch 1
+                
+                var postexist = _postRepository.FindById(commentNewDTO.PostId);
+                if (postexist is null)
+                {
+                    return BadRequest();
+                }
+                
+                if (commentNewDTO.Text is null)
+                {
+                    return NotFound("comentario vacio");
+                }
+                
+                var comment = _mapper.Map<Comment>(commentNewDTO);
+                _commentRepository.Save(comment);
+
+                var commentDTO =_mapper.Map<CommentDTO>(comment);
+=========
                 // Validación de modelo
                 if (!ModelState.IsValid)
                 {
@@ -104,10 +186,11 @@ namespace MusicApp.Controllers
                     PostId = commentNewDTO.PostId,
                     UserId = user.Id
                 };
-
+                
                 _commentRepository.Save(comment);
 
                 var commentDTO = _mapper.Map<CommentDTO>(comment);
+>>>>>>>>> Temporary merge branch 2
 
                 return Created("Creado con exito", commentDTO);
             }
