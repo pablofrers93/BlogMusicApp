@@ -1,4 +1,5 @@
-﻿using MusicApp.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicApp.Models;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
 
