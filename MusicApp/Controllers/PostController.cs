@@ -104,7 +104,6 @@ namespace MusicApp.Controllers
 
                 var postDTO = new PostDTO
                 {
-                    CreationDate = post.CreationDate,
                     Title = post.Title,
                     Image = newPostDTO.Image,
                     Text = post.Text,
@@ -143,5 +142,28 @@ namespace MusicApp.Controllers
             }
             return ruta;
         }
+
+        [HttpGet("category/{category}")]
+            public IActionResult GetCategory(string category)
+            {
+                try
+                {
+                    var postsCategory = _postRepository.FindByCategory(category);
+
+                    if(postsCategory is null)
+                    {
+                    return BadRequest("categoria vacia");
+                    }
+                    var postsDTO = _mapper.Map<List<GetPostDTO>>(postsCategory);
+                    return Ok(postsDTO);
+
+                }
+                catch(Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+
     }
+    
 }
