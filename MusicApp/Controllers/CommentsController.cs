@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
@@ -14,7 +15,7 @@ namespace MusicApp.Controllers
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private IPostRepository _postRepository;
-        
+
 
         public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
@@ -69,10 +70,10 @@ namespace MusicApp.Controllers
                 return StatusCode(500, Ex.Message);
             }
         }
-
+        [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
-        {
+       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
+       {
             try
             {
                 //validaciones

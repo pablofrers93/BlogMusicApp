@@ -8,13 +8,13 @@ using MusicApp.Models.Enums;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Reflection.Metadata.Ecma335;
-
+using System.Security.Claims;
 
 namespace MusicApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
@@ -66,13 +66,13 @@ namespace MusicApp.Controllers
                 return StatusCode(500, Ex.Message);
             }
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] PostDTO newPostDTO)
         {
             try
             {
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
