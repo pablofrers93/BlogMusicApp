@@ -26,13 +26,17 @@ IMapper mapper = mapperConfig.CreateMapper();
 
 builder.Services.AddSingleton(mapper);
 
-// Add services to the container.
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+
+
+//// Add services to the container.
+/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                     options.LoginPath = new PathString("/index.html");
-                });
+                });*/
+
+
 //inyecciones para autorizacion
 builder.Services.AddAuthorization(options =>
 {
