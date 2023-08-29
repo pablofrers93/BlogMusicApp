@@ -4,7 +4,7 @@ namespace MusicApp.Models.DTOs
 {
     public class GetPostDTO
     {
-        [JsonIgnore]
+        
         public long Id { get; set; }
         public DateTime CreationDate { get; set; }
         public string Title { get; set; }
