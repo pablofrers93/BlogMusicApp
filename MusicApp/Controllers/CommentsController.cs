@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
@@ -62,17 +63,17 @@ namespace MusicApp.Controllers
 
                 var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-                return Ok(commentsDTO);
+                    return Ok(commentsDTO);
+                }
+                catch (Exception Ex)
+                {
+                        return StatusCode(500, Ex.Message);
+                }
             }
-            catch (Exception Ex)
-            {
-                return StatusCode(500, Ex.Message);
-            }
-        }
-
+        [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
-        {
+       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
+       {
             try
             {
                 //validaciones
