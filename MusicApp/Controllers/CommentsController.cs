@@ -66,11 +66,13 @@ namespace MusicApp.Controllers
 
                 return Ok(commentsDTO);
             }
+
             catch (Exception Ex)
             {
                 return StatusCode(500, Ex.Message);
             }
         }
+
         [Authorize]
         [HttpPost]
        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
