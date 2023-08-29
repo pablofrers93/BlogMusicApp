@@ -7,7 +7,8 @@ using MusicApp.Models.Entities;
 using MusicApp.Models.Enums;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
-using System.Security.Principal;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace MusicApp.Controllers
 {
@@ -71,7 +72,7 @@ namespace MusicApp.Controllers
         {
             try
             {
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
@@ -103,7 +104,7 @@ namespace MusicApp.Controllers
 
                 var postDTO = new PostDTO
                 {
-                    CreationDate = post.CreationDate,
+                    //CreationDate = post.CreationDate,
                     Title = post.Title,
                     Image = newPostDTO.Image,
                     Text = post.Text,
