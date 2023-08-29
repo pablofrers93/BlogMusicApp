@@ -35,9 +35,8 @@ namespace MusicApp.Repositories
             //    .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
             //    .ToList();
             return FindAll()
-                  .Include(post => post.Comments)
+                  .Include(post => post.Comments.OrderByDescending(comment => comment.CreationDate))
                   .ThenInclude(c => c.User)
-                  .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
                   .ToList();
         }
 
