@@ -89,12 +89,12 @@ namespace MusicApp.Controllers
                     return BadRequest("El post no cumple con las validaciones");
                 }
 
-                var imagePath = await SaveImage(newPostDTO.Image);
+                //var imagePath = await SaveImage(newPostDTO.Image);
                 var post = new Post
                 {
                     CreationDate = DateTime.Now,
                     Title = newPostDTO.Title,
-                    Image = imagePath,
+                    Image = "",
                     Text = newPostDTO.Text,
                     Category = newPostDTO.Category,
                     UserId = user.Id
@@ -105,7 +105,7 @@ namespace MusicApp.Controllers
                 var postDTO = new PostDTO
                 {
                     Title = post.Title,
-                    Image = newPostDTO.Image,
+                    //Image = newPostDTO.Image,
                     Text = post.Text,
                     Category = post.Category
                 };
@@ -126,22 +126,22 @@ namespace MusicApp.Controllers
         }
 
         // Método  para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
-        [HttpPost("SaveImage")]
-        private async Task<string> SaveImage([FromForm] IFormFile file)
-        {
-            var ruta = String.Empty;
+        //[HttpPost("SaveImage")]
+        //private async Task<string> SaveImage([FromForm] IFormFile file)
+        //{
+        //    var ruta = String.Empty;
 
-            if (file.Length > 0)
-            {
-                var fileName = Guid.NewGuid().ToString() + ".jpg";
-                ruta = $"Images/{fileName}";
-                using (var stream = new FileStream(ruta, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-            }
-            return ruta;
-        }
+        //    if (file.Length > 0)
+        //    {
+        //        var fileName = Guid.NewGuid().ToString() + ".jpg";
+        //        ruta = $"Images/{fileName}";
+        //        using (var stream = new FileStream(ruta, FileMode.Create))
+        //        {
+        //            await file.CopyToAsync(stream);
+        //        }
+        //    }
+        //    return ruta;
+        //}
 
         [HttpGet("category/{category}")]
             public IActionResult GetCategory(string category)
