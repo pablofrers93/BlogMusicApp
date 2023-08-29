@@ -15,6 +15,7 @@ namespace MusicApp.Controllers
         private readonly IMapper _mapper;
         private IPostRepository _postRepository;
 
+
         public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
@@ -24,8 +25,10 @@ namespace MusicApp.Controllers
         }
 
         [HttpGet("user/{id}")]
+
         public IActionResult GetCommentsByUser(long id)
         {
+
             try
             {
                 var comments = _commentRepository.GetCommentsByUser(id);
@@ -45,7 +48,9 @@ namespace MusicApp.Controllers
         }
 
         [HttpGet("post/{id}")]
+
         public IActionResult GetCommentsByPost(long id)
+
         {
             try
             {
@@ -66,7 +71,7 @@ namespace MusicApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(CommentNewDTO commentNewDTO)
+        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
         {
             try
             {
@@ -81,6 +86,8 @@ namespace MusicApp.Controllers
                 {
                     return Unauthorized();
                 }
+
+                // Validación de modelo
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);

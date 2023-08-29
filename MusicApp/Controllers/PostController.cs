@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Models.DTOs;
@@ -7,11 +8,13 @@ using MusicApp.Models.Enums;
 using MusicApp.Repositories;
 using MusicApp.Repositories.Interfaces;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace MusicApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
@@ -69,7 +72,7 @@ namespace MusicApp.Controllers
         {
             try
             {
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
@@ -91,7 +94,7 @@ namespace MusicApp.Controllers
                 {
                     CreationDate = DateTime.Now,
                     Title = newPostDTO.Title,
-                    Image = imagePath, 
+                    Image = imagePath,
                     Text = newPostDTO.Text,
                     Category = newPostDTO.Category,
                     UserId = user.Id
