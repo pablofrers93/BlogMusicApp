@@ -63,13 +63,13 @@ namespace MusicApp.Controllers
 
                 var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
 
-                    return Ok(commentsDTO);
-                }
-                catch (Exception Ex)
-                {
-                        return StatusCode(500, Ex.Message);
-                }
+                return Ok(commentsDTO);
             }
+            catch (Exception Ex)
+            {
+                return StatusCode(500, Ex.Message);
+            }
+        }
         [Authorize]
         [HttpPost]
        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)

@@ -30,10 +30,15 @@ namespace MusicApp.Repositories
 
         public IEnumerable<Post> GetAllPosts()
         {
+            //return FindAll()
+            //    .Include(post => post.Comments)
+            //    .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
+            //    .ToList();
             return FindAll()
-                .Include(post => post.Comments)
-                .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
-                .ToList();
+                  .Include(post => post.Comments)
+                  .ThenInclude(c => c.User)
+                  .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
+                  .ToList();
         }
 
         public Post GetLastPostRegistered()
