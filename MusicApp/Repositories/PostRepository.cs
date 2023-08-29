@@ -14,26 +14,26 @@ namespace MusicApp.Repositories
         public Post FindById(long id)
         {
             return FindByCondition(post => post.Id == id)
-                .Include(post=>post.Comments)
-                .ThenInclude(cm=>cm.User.Email)
-                .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
-                .FirstOrDefault();
+                    .Include(post => post.Comments)
+                    .ThenInclude(comment => comment.User) // Incluye el usuario de cada comentario
+                    .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
+                    .FirstOrDefault();
         }
 
         public IEnumerable<Post> FindByCategory(string number)
         {
             return FindByCondition(post => post.Category.ToUpper() == post.Category.ToUpper())
                 .Include(post => post.Comments)
-                .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
+                .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
                 .ToList();
         }
 
         public IEnumerable<Post> GetAllPosts()
         {
             return FindAll()
-                .Include(post => post.Comments)
-                .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
-                .ToList();
+            .Include(post => post.Comments)
+            .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
+            .ToList();
         }
 
         public Post GetLastPostRegistered()
