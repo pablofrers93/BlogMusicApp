@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
 using System.Net;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace MusicApp.Controllers
@@ -61,13 +63,13 @@ namespace MusicApp.Controllers
                 return StatusCode(500, Ex.Message);
             }
         }
-
+        [Authorize]
         [HttpGet("current")]
         public IActionResult GetCurrent()
         {
             try
             {
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
@@ -135,13 +137,13 @@ namespace MusicApp.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        [Authorize]
         [HttpGet("current/posts")] //para enviar los post del usuario al front
         public IActionResult GetPosts()
         {
             try
             {
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
 
                 if (string.IsNullOrEmpty(email))
                 {
@@ -158,7 +160,7 @@ namespace MusicApp.Controllers
                 // Obtén las cuentas asociadas al cliente desde el repositorio de cuentas.
                 var posts = _postRepository.GetPostsByUser(user.Id);
 
-                var postsDTO = _mapper.Map<List<PostDTO>>(posts);
+                var postsDTO = _mapper.Map<List<GetPostDTO>>(posts);
 
                 return Ok(postsDTO);
             }

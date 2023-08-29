@@ -14,17 +14,16 @@ namespace MusicApp.Repositories
         public Post FindById(long id)
         {
             return FindByCondition(post => post.Id == id)
-                    .Include(post => post.Comments)
-                    .ThenInclude(comment => comment.User) // Incluye el usuario de cada comentario
-                    .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
-                    .FirstOrDefault();
+                .Include(post => post.Comments.OrderByDescending(comment => comment.CreationDate))
+                  .ThenInclude(c => c.User)
+                .FirstOrDefault();
         }
 
-        public IEnumerable<Post> FindByCategory(string number)
+        public IEnumerable<Post> FindByCategory(string category)
         {
-            return FindByCondition(post => post.Category.ToUpper() == post.Category.ToUpper())
-                .Include(post => post.Comments)
-                .OrderByDescending(post => post.Comments.Max(comment => comment.CreationDate))
+            return FindByCondition(post => post.Category.ToUpper() == category.ToUpper())
+                //.Include(post => post.Comments.OrderByDescending(comment => comment.CreationDate))
+                  //.ThenInclude(c => c.User)
                 .ToList();
         }
 
@@ -48,8 +47,8 @@ namespace MusicApp.Repositories
         public IEnumerable<Post> GetPostsByUser(long userId)
         {
             return FindByCondition(post => post.UserId == userId)
-                .Include(post => post.Comments)
-                .OrderBy(post => post.Comments.OrderBy(comment => comment.CreationDate))
+               .Include(post => post.Comments.OrderByDescending(comment => comment.CreationDate))
+                  .ThenInclude(c => c.User)
                 .ToList();
         }
 

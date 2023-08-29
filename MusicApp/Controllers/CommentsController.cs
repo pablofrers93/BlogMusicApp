@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace MusicApp.Controllers
 {
@@ -65,11 +66,13 @@ namespace MusicApp.Controllers
 
                 return Ok(commentsDTO);
             }
+
             catch (Exception Ex)
             {
                 return StatusCode(500, Ex.Message);
             }
         }
+
         [Authorize]
         [HttpPost]
        public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
@@ -77,7 +80,7 @@ namespace MusicApp.Controllers
             try
             {
                 //validaciones
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
