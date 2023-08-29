@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Models.DTOs;
 using MusicApp.Models.Entities;
 using MusicApp.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace MusicApp.Controllers
 {
@@ -14,7 +16,7 @@ namespace MusicApp.Controllers
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private IPostRepository _postRepository;
-        
+
 
         public CommentsController(ICommentRepository commentRepository, IUserRepository userRepository, IMapper mapper, IPostRepository postRepository)
         {
@@ -25,8 +27,10 @@ namespace MusicApp.Controllers
         }
 
         [HttpGet("user/{id}")]
+
         public IActionResult GetCommentsByUser(long id)
         {
+
             try
             {
                 var comments = _commentRepository.GetCommentsByUser(id);
@@ -46,7 +50,9 @@ namespace MusicApp.Controllers
         }
 
         [HttpGet("post/{id}")]
+
         public IActionResult GetCommentsByPost(long id)
+
         {
             try
             {
@@ -60,19 +66,21 @@ namespace MusicApp.Controllers
 
                 return Ok(commentsDTO);
             }
+
             catch (Exception Ex)
             {
                 return StatusCode(500, Ex.Message);
             }
         }
 
+        [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody]CommentNewDTO commentNewDTO)
-        {
+       public IActionResult Post([FromBody] CommentNewDTO commentNewDTO)
+       {
             try
             {
                 //validaciones
-                string email = User.FindFirst("User") != null ? User.FindFirst("User").Value : string.Empty;
+                string email = User.FindFirst(ClaimTypes.Email) != null ? User.FindFirst(ClaimTypes.Email).Value : string.Empty;
                 if (email == string.Empty)
                 {
                     return Unauthorized();
