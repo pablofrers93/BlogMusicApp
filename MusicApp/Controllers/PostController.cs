@@ -93,10 +93,10 @@ namespace MusicApp.Controllers
                 var post = new Post
                 {
                     CreationDate = DateTime.Now,
-                    Title = newPostDTO.Title,
+                    Title = newPostDTO.title,
                     Image = "",
-                    Text = newPostDTO.Text,
-                    Category = newPostDTO.Category,
+                    Text = newPostDTO.text,
+                    Category = newPostDTO.category,
                     UserId = user.Id
                 };
 
@@ -104,10 +104,10 @@ namespace MusicApp.Controllers
 
                 var postDTO = new PostDTO
                 {
-                    Title = post.Title,
+                    title = post.Title,
                     //Image = newPostDTO.Image,
-                    Text = post.Text,
-                    Category = post.Category
+                    text = post.Text,
+                    category = post.Category
                 };
 
                 return Created("El post se creo correctamente.", postDTO);
@@ -120,9 +120,9 @@ namespace MusicApp.Controllers
 
         private bool ValidarPost(PostDTO newPostDTO)
         {
-            return newPostDTO.Text != string.Empty ||
-                   newPostDTO.Title != string.Empty ||
-                   newPostDTO.Category != string.Empty;
+            return newPostDTO.text != string.Empty ||
+                   newPostDTO.title != string.Empty ||
+                   newPostDTO.category != string.Empty;
         }
 
         // Método  para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
