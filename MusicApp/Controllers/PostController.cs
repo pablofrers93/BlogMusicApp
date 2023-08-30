@@ -68,7 +68,7 @@ namespace MusicApp.Controllers
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] PostDTO newPostDTO)
+        public async Task<IActionResult> Post([FromBody] PostDTO newPostDTO)
         {
             try
             {
