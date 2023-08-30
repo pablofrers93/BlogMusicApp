@@ -125,23 +125,24 @@ namespace MusicApp.Controllers
                    newPostDTO.Category != string.Empty;
         }
 
-        // Método  para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
-        //[HttpPost("SaveImage")]
-        //private async Task<string> SaveImage([FromForm] IFormFile file)
-        //{
-        //    var ruta = String.Empty;
+       // Método para guardar la imagen de forma local y devuelver la ruta donde fue guardada.
 
-        //    if (file.Length > 0)
-        //    {
-        //        var fileName = Guid.NewGuid().ToString() + ".jpg";
-        //        ruta = $"Images/{fileName}";
-        //        using (var stream = new FileStream(ruta, FileMode.Create))
-        //        {
-        //            await file.CopyToAsync(stream);
-        //        }
-        //    }
-        //    return ruta;
-        //}
+        [HttpPost("SaveImage")]
+        private async Task<string> SaveImage([FromForm] IFormFile file)
+        {
+            var ruta = String.Empty;
+
+            if (file.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + ".jpg";
+                ruta = $"Images/{fileName}";
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            return ruta;
+        }
 
         [HttpGet("category/{category}")]
             public IActionResult GetCategory(string category)
