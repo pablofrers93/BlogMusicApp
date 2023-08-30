@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicApp.Repositories.Interfaces;
@@ -35,19 +34,19 @@ namespace MusicApp.Controllers
 
                 string jwtToken = _tokenServices.GenerateToken(User.Email);
 
-                var claims = new List<Claim>
-                {
-                    new Claim("User", userLogin.Email),
-                };
+                //var claims = new List<Claim>
+                //{
+                //    new Claim("User", userLogin.Email),
+                //};
 
-                var claimsIdentity = new ClaimsIdentity(
-                    claims,
-                    CookieAuthenticationDefaults.AuthenticationScheme
-                    );
+                //var claimsIdentity = new ClaimsIdentity(
+                //    claims,
+                //    CookieAuthenticationDefaults.AuthenticationScheme
+                //    );
 
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                //await HttpContext.SignInAsync(
+                //    CookieAuthenticationDefaults.AuthenticationScheme,
+                //    new ClaimsPrincipal(claimsIdentity));
 
                 return Ok(new { token = jwtToken });
             }
@@ -61,9 +60,9 @@ namespace MusicApp.Controllers
         {
             try
             {
-                await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
-                return Ok();
+                //await HttpContext.SignOutAsync(
+                //CookieAuthenticationDefaults.AuthenticationScheme);
+                return Ok(new {message = "sesion cerrada"});
             }
             catch (Exception ex)
             {
