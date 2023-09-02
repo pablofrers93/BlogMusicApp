@@ -20,6 +20,7 @@ namespace MusicApp.Repositories
         public IEnumerable<Comment> GetAllCommentsByPost(long postId)
         {
             return FindByCondition(comment => comment.PostId == postId)
+                .Include(comment => comment.User)
                 .ToList();
         }
 
